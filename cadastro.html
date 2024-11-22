@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
+    <title>Cadastro</title>
+
+    <script>
+        function pesquisaCep(cep){
+            erro.textContent = ""
+            let validacep = /^[0-9]{8}$/;
+            if(validacep.test(cep)) {
+                //Cria um elemento javascript.
+                var script = document.createElement('script');
+
+                //Sincroniza com o callback.
+                script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=preenche_cep';
+
+                //Insere script no documento e carrega o conteúdo.
+                document.body.appendChild(script);
+            } else {
+                erro.textContent = "CEP digitado incorretamente!";
+                document.getElementById("cep").value = "";
+            }
+        }
+
+        function preenche_cep(conteudo){
+            if("erro" in conteudo){
+                erro.textContent = "CEP não encontrado, digite os dados manualmente!";
+            } else {
+                document.getElementById("rua").value = conteudo.logradouro;
+                document.getElementById("bairro").value = conteudo.bairro;
+                document.getElementById("cidade").value = conteudo.localidade;
+                document.getElementById("uf").value = conteudo.uf;
+            }
+        }
+
+
+        function enviaCadastro(){
+            let objeto = new Object();
+            objeto.nome = document.getElementById("nome").value;
+            objeto.email = document.getElementById("email").value;
+            objeto.telefone = document.getElementById("telefone").value;
+            objeto.data_nasc = document.getElementById("data_nasc").value;
+            objeto.cep = document.getElementById("cep").value;
+            objeto.rua = document.getElementById("rua").value;
+            objeto.numero = document.getElementById("numero").value;
+            objeto.bairro = document.getElementById("bairro").value;
+            objeto.cidade = document.getElementById("cidade").value;
+            objeto.estado = document.getElementById("uf").value;
+
+            let jsonString = JSON.stringify(objeto);
+
+            enviarPost(jsonString)   
+        }
+
+        function enviarPost(json){
+            fetch('http://localhost:3000/clientes', {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: json,
+            })
+            .then((response) => response.json())
+            .then((json) => {
+                alert("Usuário inserido com id = " + json.id)
+                //limpaFormulario()
+            })
+            .catch((error) => alert(
+                "Erro ao inserir novo usuário, tente mais tarde! Error: " + error
+            ));
+        }
+
+        function limpaFormulario(){
+            document.getElementById("nome").value = '';
+            document.getElementById("email").value = '';
+            document.getElementById("telefone").value = '';
+            document.getElementById("data_nasc").value = '';
+            document.getElementById("cep").value = '';
+            document.getElementById("rua").value = '';
+            document.getElementById("numero").value = '';
+            document.getElementById("bairro").value = '';
+            document.getElementById("cidade").value = '';
+            document.getElementById("uf").value = '';
+        }
+    </script>
+
+</head>
+<body>
+    <header>
+        <!-- <img src="logo.png" alt="Logo do e-commerce Augusto Multimarcas"> -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid justify-content-center">
+                <a class="navbar-brand" href="#">
+                    <img src="logo-transparente.png" height="100" alt="">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse flex-grow-0 justify-content-center" id="navbarNav">
+                    <ul class="navbar-nav text-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">HOME</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="cadastro.html">CADASTRO<span class="sr-only"></span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="meusdados.html">MEUS DADOS<span class="sr-only"></span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <form>
+            <label for="nome">Nome e sobrenome:</label>
+            <input type="text" id="nome" class = "input-padrao" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" class = "input-padrao" required>
+
+            <label for="telefone">Celular:</label>
+            <input type="tel" id="telefone" class = "input-padrao"required>
+ 
+            <label for="data_nasc">Data de nascimento:</label>
+            <input type="date" id="data_nasc" class = "input-padrao" required>
+
+            <label for="cep">CEP:</label>
+            <input type="text" id="cep" class = "input-padrao" onblur="pesquisaCep(this.value);" required>
+            <p id="erro"></p>
+
+            <label for="rua">Rua:</label>
+            <input type="text" id="rua" class="input-padrao" required>
+
+            <label for="numero">Número:</label>
+            <input type="number" id="numero" class="input-padrao" required>
+
+            <label for="bairro">Bairro:</label>
+            <input type="text" id="bairro" class="input-padrao" required>
+
+            <label for="cidade">Cidade:</label>
+            <input type="text" id="cidade" class="input-padrao" required>
+
+            <label for="uf">Estado:</label>
+            <input type="text" id="uf" class="input-padrao" required>
+        
+            <input type="button" onclick= "enviaCadastro();" value="Enviar formulário" class="enviar">
+        </form>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

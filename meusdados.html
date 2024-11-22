@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
+    <title>Meus Dados </title>
+    <script>
+        function pesquisaId(id){
+            if (id != '') {
+                fetch('http://localhost:3000/clientes/'+id)
+                .then((resposta) => {
+                    return resposta.json().then((dados) =>{
+                        //console.log(dados);
+                        if (dados.erro != 'inexistente') {
+                            document.getElementById("nome").value = dados.nome;
+                            document.getElementById("email").value = dados.email;
+                            document.getElementById("telefone").value = dados.telefone;
+                            document.getElementById("data_nasc").value = dados.data_nasc;
+                            document.getElementById("cep").value = dados.cep;
+                            document.getElementById("rua").value = dados.rua;
+                            document.getElementById("numero").value = dados.numero;
+                            document.getElementById("bairro").value = dados.bairro;
+                            document.getElementById("cidade").value = dados.cidade;
+                            document.getElementById("uf").value = dados.estado;
+                        } else {
+                            alert("Usuário inexistente!")
+                            limpaFormulario();
+                        }
+                    }).catch((error) => {
+                        console.log(error);
+                    })
+                })
+            }
+        }
+
+        function limpaFormulario(){
+            document.getElementById("nome").value = '';
+            document.getElementById("email").value = '';
+            document.getElementById("telefone").value = '';
+            document.getElementById("data_nasc").value = '';
+            document.getElementById("cep").value = '';
+            document.getElementById("rua").value = '';
+            document.getElementById("numero").value = '';
+            document.getElementById("bairro").value = '';
+            document.getElementById("cidade").value = '';
+            document.getElementById("uf").value = '';
+        }    
+    </script>
+</head>
+<body>
+    <header>
+        <!-- <img src="logo.png" alt="Logo do e-commerce Augusto Multimarcas"> -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid justify-content-center">
+                <a class="navbar-brand" href="#">
+                    <img src="logo-transparente.png" height="100" alt="">
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse flex-grow-0 justify-content-center" id="navbarNav">
+                    <ul class="navbar-nav text-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">HOME</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="cadastro.html">CADASTRO<span class="sr-only"></span></a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="meusdados.html">MEUS DADOS<span class="sr-only"></span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <form>
+            <label for="id">Digite o seu ID:</label>
+            <input type="text" id="id" class = "input-padrao" onblur="pesquisaId(this.value);">
+        </form>
+
+        <form>
+            <label for="nome">Nome e sobrenome:</label>
+            <input type="text" id="nome" class = "input-padrao" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" class = "input-padrao" required>
+
+            <label for="telefone">Celular:</label>
+            <input type="tel" id="telefone" class = "input-padrao"required>
+ 
+            <label for="data_nasc">Data de nascimento:</label>
+            <input type="date" id="data_nasc" class = "input-padrao" required>
+
+            <label for="cep">CEP:</label>
+            <input type="text" id="cep" class = "input-padrao" onblur="pesquisaCep(this.value);" required>
+            <p id="erro"></p>
+
+            <label for="rua">Rua:</label>
+            <input type="text" id="rua" class="input-padrao" required>
+
+            <label for="numero">Número:</label>
+            <input type="number" id="numero" class="input-padrao" required>
+
+            <label for="bairro">Bairro:</label>
+            <input type="text" id="bairro" class="input-padrao" required>
+
+            <label for="cidade">Cidade:</label>
+            <input type="text" id="cidade" class="input-padrao" required>
+
+            <label for="uf">Estado:</label>
+            <input type="text" id="uf" class="input-padrao" required>
+        
+            <input type="button" onclick= "enviaCadastro();" value="Alterar dados" class="enviar">
+        </form>
+    </main>
+</body>
+</html>
